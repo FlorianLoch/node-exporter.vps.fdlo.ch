@@ -1,0 +1,22 @@
+# Based on my template used for cassette
+name: deploy
+
+on: [push, pull_request]
+
+jobs:
+  deploy:
+    # Only run this in case building and testing succeeded and the event is a push to master
+    if: "${{ github.event_name == 'push' && github.ref == 'refs/heads/main' }}"
+    runs-on: ubuntu-latest
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v2
+      with:
+        fetch-depth: 0 # do a full clone, not a shallow one
+    - name: Push to dokku
+      uses: dokku/github-action@v1.0.1
+      with:
+        git_push_flags: --force
+        git_remote_url: ssh://dokku@vps.fdlo.ch:22/node-exporter
+        ssh_private_key: ${{ secrets.DOKKU_SSH_PRIVATE_KEY }}
+        branch: main
