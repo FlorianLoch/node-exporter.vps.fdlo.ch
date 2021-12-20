@@ -23,7 +23,7 @@ cd /apps && mkdir ./node-exporter && sudo chown nobody:nogroup node-exporter
 
 dokku http-auth:on node-exporter <username> <password>
 
-dokku docker-options:add node-exporter deploy "--net=host"
+dokku network:set node-exporter attach-post-deploy prometheus-bridge
 
 dokku checks:disable node-exporter
 
